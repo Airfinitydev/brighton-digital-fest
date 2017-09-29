@@ -1,13 +1,21 @@
 <!doctype html>
-<html>
+<html lang="en">
+
 	<head>
 		<meta charset="utf-8">
+
+		<title>Airfinity – Building Data Pipelines with Airflow</title>
+
+		<meta name="description" content="A presentation about building Data Pipelines with Airflow">
+		<meta name="author" content="Airfinity">
+
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>reveal.js</title>
-
 		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/black.css">
+		<link rel="stylesheet" href="css/theme/black.css" id="theme">
 
 		<!-- Theme used for syntax highlighting of code -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
@@ -20,30 +28,269 @@
 			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
 			document.getElementsByTagName( 'head' )[0].appendChild( link );
 		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
 	</head>
+
 	<body>
+
 		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
+				<section>
+					<h3>Building Data Pipelines</h3>
+					<h3>with Airflow</h3>
+					<p>
+						<small>By <a href="https://www.airfinity.com/">Airfinity</a> / <a href="http://twitter.com/airfinity">@airfinity</a></small>
+					</p>
+				</section>
+
+				<section>
+					<h2>Welcome</h2>
+				</section>
+
+				<!-- Example of nested vertical slides -->
+				<section>
+					<section>
+						<h2>About Us</h2>
+					</section>
+					<section>
+						<h2>Airfinity</h2>
+						<p>Event Insights &amp; Sponsorship matching</p>
+						<p>
+							<small><em>Aiming to make Sponsoring an event as easy as placing a Facebook Ad</em></small>
+						</p>
+						<p>https://www.airfinity.com</p>
+					</section>
+					<section data-background="images/rich1.jpg">
+						<h2>Richard Hayes</h2>
+						<p>Lead Data Engineer</p>
+						<p>
+							<small><em>@justcompile</em></small>
+						</p>
+					</section>
+					<section data-background="images/james1.jpg">
+						<h2>James Heywood</h2>
+						<p>Lead Engineer</p>
+						<p>
+							<small><em>@jdheywood</em></small>
+						</p>
+					</section>
+				</section>
+
+				<section>
+					<h2>Data Pipelines?</h2>
+				</section>
+
+				<section>
+					<p>"Workflows"</p>
+					<p>A set of steps relating to specific pieces of data</p>
+				</section>
+
+				<section data-background="images/pipeline.gif"></section>
+
+				<section>
+					<p>Data warehousing</p>
+					<p>Infrastructure maintenace</p>
+					<p>"Offline" email mechanisms (newsletters etc)</p>
+					<p>insert oyster &amp; world here</p>
+				</section>
+
+				<section>
+					<h3>Airflow</h3>
+					<p class="fragment">a workflow management platform</p>
+				</section>
+
+				<section>					
+					<p>Created by AirBnB</p>
+					<p class="fragment">Open sourced in June 2015</p>
+					<p class="fragment">Joined the Apache Software Foundation’s incubation program in March 2016.</p>
+					<p class="fragment">https://github.com/apache/incubator-airflow</p>
+				</section>
+
+				<section>
+					<h3>Used by:</h3>
+					<ul>
+						<li>AirBnB (obivously)</li>
+						<li>Airfinity</li>
+						<li>Spotify</li>
+						<li>United Airlines</li>
+						<li>Zendesk</li>
+						<li>...many others</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>What makes it great</h3>
+					<p>Web UI</p>
+					<p>Scheduler</p>
+					<p>Scalable</p>
+					<p>
+						Rich integrations (S3, all major RDBS &amp; others)
+					</p>
+
+					<p>...all out of the box</p>
+				</section>
+
+				<section>
+					<h3>But I wanna build stuffs!</h3>
+				</section>
+
+				<section data-background="images/columbo-dog-mayhem.jpg">
+					<h3>just one more thing</h3>
+				</section>
+				
+				<section>
+					<h3>DAGs</h3>
+					<p class="fragment">or directed acyclic graphs</p>
+				</section>
+
+				<section>
+					<p style="background-color:#fff" >
+						<img src="images/Topological_Ordering.svg" />
+						<img style="background-color:#fff" src="images/Polytree.svg" />
+						<img src="images/Tred-Gprime.svg" />
+					</p>
+				</section>
+
+				<section>
+					<h3>In Airflow's world...</h3>
+					<p>DAG - A pipeline containing one or more tasks</p>
+					<p>Task - A unit of work within a DAG</p>
+				</section>
+
+				<section>
+					<h3>DEMO</h3>
+				</section>
+
+				<section>
+					<h3>Our pipeline</h3>
+					<p>Daily Mail-ising the Argus</p>
+					<img class="fragment" style="background-color:#fff; border: 0; padding: 30px 0 30px 10px" src="images/workflow.png" />
+				</section>
+
+				<section class="stretch">
+						<h3>Creating our DAG</h3>
+						<pre class="stretch"><code class="python" data-trim contenteditable style="font-size: 17px;">
+	# code/dags/daily_mail_formatter.py
+
+	from airflow import DAG
+	from airflow.operators.latest_only_operator import LatestOnlyOperator
+	from airflow.operators.python_operator import PythonOperator
+
+	default_args = {
+    'owner': 'airflow',
+    'start_date': datetime(2017, 9, 27),
+    'email': ['airflow@airflow.com'],
+    'retries': 1,
+    'retry_delay': timedelta(minutes=5),
+    ...
+	}
+
+	dag = DAG(
+	    'daily_mailiser',
+	    default_args=default_args,
+	    schedule_interval='@daily'
+	)
+
+						</code></pre>
+					</section>
+					<section>
+							<pre><code class="python" data-trim contenteditable style="font-size: 17px;">
+
+		latest_only = LatestOnlyOperator(task_id='latest_only', dag=dag)
+	
+							</code></pre>
+						</section>
+						<section class="stretch">
+                                <h4>Example tasks</h4>
+								<pre><code class="python" data-trim contenteditable style="font-size: 16px;">
+  download_news = PythonOperator(
+			task_id='download_news',
+			python_executable=argus_news_scraper,
+			dag=dag
+		)
+
+		apply_bs = PythonOperator(
+			task_id='apply_bs',
+			python_executable=prove_carcinogenic_effect_with_science,
+			op_kwargs={
+			    'use_actual_science': False,
+			},
+			dag=dag
+		)
+		
+								</code></pre>
+                            </section>
+                            <section class="stretch">
+                                    <h5>Defining the order of execution</h5>
+                                    <pre><code class="python" data-trim contenteditable style="font-size: 17px;">
+        
+        download_webpage.set_upstream(latest_only)
+        extract_headlines.set_upstream(download_webpage)
+        add_hate.set_upstream(extract_headlines)
+        ...
+                                    </code></pre>
+                                    <small>Super horrible and confusing</small>
+                                </section>
+
+                                <section class="stretch">
+                                        <h5>Defining the order of execution</h5>
+                                        <pre><code class="python" data-trim contenteditable style="font-size: 17px;">
+            latest_only >> \
+                download_webpage >> \
+                extract_headlines >> \
+                apply_bs >> \
+                bigotry_enhancer >> \
+                merge_with_real_headlines >> \
+                export_to_web
+                                        </code></pre>
+                                    </section>
+                                    <section>
+                                        <h3>Some actual code</h3>
+                                    </section>
+                                    <section>
+                                        <h3>Airflow UI</h3>
+                                    </section>
+                                    <section>
+                                        <h3>Parallel Tasks</h3>
+                                    </section>
+                                    <section>
+                                        <h3>Results</h3>
+                                    </section>
 			</div>
+
 		</div>
 
 		<script src="lib/js/head.min.js"></script>
 		<script src="js/reveal.js"></script>
 
 		<script>
-			// More info about config & dependencies:
-			// - https://github.com/hakimel/reveal.js#configuration
-			// - https://github.com/hakimel/reveal.js#dependencies
+
+			// More info https://github.com/hakimel/reveal.js#configuration
 			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// More info https://github.com/hakimel/reveal.js#dependencies
 				dependencies: [
-					{ src: 'plugin/markdown/marked.js' },
-					{ src: 'plugin/markdown/markdown.js' },
-					{ src: 'plugin/notes/notes.js', async: true },
-					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
 				]
 			});
+
 		</script>
+
 	</body>
 </html>
