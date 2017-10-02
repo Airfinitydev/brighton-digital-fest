@@ -20,6 +20,9 @@
 		<!-- Theme used for syntax highlighting of code -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
 
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="css/airfinity.css">
+
 		<!-- Printing and PDF exports -->
 		<script>
 			var link = document.createElement( 'link' );
@@ -44,7 +47,7 @@
 					<h3>Building Data Pipelines</h3>
 					<h3>with Airflow</h3>
 					<p>
-						<small>By <a href="https://www.airfinity.com/">Airfinity</a> / <a href="http://twitter.com/airfinity">@airfinity</a></small>
+						<small>By <a href="https://www.airfinity.com/">airfinity</a> / <a href="http://twitter.com/airfinity">@airfinity</a></small>
 					</p>
 				</section>
 
@@ -58,12 +61,13 @@
 						<h2>About Us</h2>
 					</section>
 					<section>
-						<h2>Airfinity</h2>
+						<!-- <h2>airfinity</h2> -->
+						<img id="logo" src="images/Airfinity-Logo.png" />
 						<p>Event Insights &amp; Sponsorship matching</p>
 						<p>
 							<small><em>Aiming to make Sponsoring an event as easy as placing a Facebook Ad</em></small>
 						</p>
-						<p>https://www.airfinity.com</p>
+						<p><small>https://www.airfinity.com</small></p>
 					</section>
 					<section data-background="images/rich1.jpg">
 						<h2>Richard Hayes</h2>
@@ -95,8 +99,8 @@
 				<section>
 					<p>Data warehousing</p>
 					<p>Infrastructure maintenace</p>
-					<p>"Offline" email mechanisms (newsletters etc)</p>
-					<p>insert oyster &amp; world here</p>
+					<p>Email (newsletters etc)</p>
+					<p>...many others</p>
 				</section>
 
 				<section>
@@ -112,7 +116,7 @@
 				</section>
 
 				<section>
-					<h3>Used by:</h3>
+					<h3>Used by</h3>
 					<ul>
 						<li>AirBnB (obivously)</li>
 						<li>Airfinity</li>
@@ -124,9 +128,10 @@
 				</section>
 
 				<section>
-					<h3>What makes it great</h3>
+					<h3>What makes it great?</h3>
 					<p>Web UI</p>
-					<p>Scheduler</p>
+					<p>Replay</p>
+					<p>Scheduling</p>
 					<p>Scalable</p>
 					<p>
 						Rich integrations (S3, all major RDBS &amp; others)
@@ -136,7 +141,7 @@
 				</section>
 
 				<section>
-					<h3>But I wanna build stuffs!</h3>
+					<h3>But I wanna build stuff!</h3>
 				</section>
 
 				<section data-background="images/columbo-dog-mayhem.jpg">
@@ -146,6 +151,12 @@
 				<section>
 					<h3>DAGs</h3>
 					<p class="fragment">or directed acyclic graphs</p>
+				</section>
+
+				<section>
+					<p>Graph: A structure consisting of "nodes", connected to one another via "edges"</p>
+					<p class="fragment">Directed: The edges have a direction: <br/>A -> B is not B -> A</p>
+					<p class="fragment">Acyclic: Non-circular, you will never encounter the same node again</p>
 				</section>
 
 				<section>
@@ -214,8 +225,8 @@
 			dag=dag
 		)
 
-		apply_bs = PythonOperator(
-			task_id='apply_bs',
+		apply_science = PythonOperator(
+			task_id='apply_science',
 			python_callable=prove_carcinogenic_effect_with_science,
 			op_kwargs={
 			    'use_actual_science': False,
@@ -231,7 +242,7 @@
         
         download_webpage.set_upstream(latest_only)
         extract_headlines.set_upstream(download_webpage)
-        add_hate.set_upstream(extract_headlines)
+        apply_science.set_upstream(extract_headlines)
         ...
                                     </code></pre>
                                     <small>Super horrible and confusing</small>
@@ -243,7 +254,7 @@
             latest_only >> \
                 download_webpage >> \
                 extract_headlines >> \
-                apply_bs >> \
+                apply_science >> \
                 bigotry_enhancer >> \
                 merge_with_real_headlines >> \
                 export_to_web

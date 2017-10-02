@@ -1,3 +1,4 @@
+import os
 from airflow import DAG
 from airflow.operators.latest_only_operator import LatestOnlyOperator
 from airflow.operators.python_operator import PythonOperator
@@ -5,9 +6,13 @@ from datetime import datetime, timedelta
 
 from services.argus_scraper import ArgusScraper
 from services.text_processing import prove_carcinogenic_effect_with_science
+from services.html_exporter import render_headlines_to_html
 
-WEBPAGE_FILE_PATH = '/usr/local/airflow/dags/data/argus_news.html'
-HEADLINES_FILE_PATH = '/usr/local/airflow/dags/data/headlines.jsonl'
+PROJ_DIR = os.path.dirname(os.path.abspath(__file__))
+
+WEBPAGE_FILE_PATH = os.path.join(PROJ_DIR, 'data/argus_news.html')
+HEADLINES_FILE_PATH = os.path.join(PROJ_DIR, 'data/headlines.jsonl')
+HTML_OUTPUT_FILE = os.path.join(PROJ_DIR, 'data/index.html')
 
 
 default_args = {
@@ -52,8 +57,8 @@ extract_headlines = PythonOperator(
 )
 
 
-apply_bs = PythonOperator(
-    task_id='apply_bs',
+apply_science = PythonOperator(
+    task_id='apply_science',
     python_callable=prove_carcinogenic_effect_with_science,
     op_kwargs={
         'headlines_file_path': HEADLINES_FILE_PATH,
@@ -81,17 +86,19 @@ apply_bs = PythonOperator(
 # )
 
 
-# export_to_web = PythonOperator(
-#     task_id='export_to_web',
-#     dag=dag
-# )
+export_to_web = PythonOperator(
+    task_id='export_to_web',
+    python_callable=render_headlines_to_html,
+    op_kwargs={
+        'headlines_file_path': HEADLINES_FILE_PATH,
+        'output_file': HTML_OUTPUT_FILE
+    },
+    dag=dag
+)
 
 
 latest_only >> \
     download_news >> \
     extract_headlines >> \
-    apply_bs # >> \
-    # bigotry_enhancer >> \
-    # fear_mongering_filter >> \
-    # merge_with_real_headlines >> \
-    # export_to_web
+    apply_science >> \
+    export_to_web
