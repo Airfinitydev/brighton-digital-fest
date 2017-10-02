@@ -1,8 +1,8 @@
+from datetime import datetime, timedelta
 import os
 from airflow import DAG
 from airflow.operators.latest_only_operator import LatestOnlyOperator
 from airflow.operators.python_operator import PythonOperator
-from datetime import datetime, timedelta
 
 from services.argus_scraper import ArgusScraper
 from services import text_processing

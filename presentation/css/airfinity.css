@@ -30,13 +30,15 @@
 }
 
 .reveal a {
-    color: #0080E2;
+    color: #17A5FF;
 }
 
 #logo {
     background-color: transparent;
     border: 0;
+    box-shadow: none;
     margin: 0;
     max-height: 50%;
+    max-width: 50%;
     padding: 0;
 }

@@ -1,13 +1,16 @@
-import logging
 import re
-import jsonlines
 import random
+import jsonlines
 from textblob import TextBlob
 
 
 exceptions = set(['injured', 'died', 'ill'])
 
 def prove_carcinogenic_effect_with_science(headlines_file_path, use_actual_science):
+    """
+    Uses noun phrase extraction and sentiment analysis to determine whether each headline
+    may or may not have carcinogenic effects
+    """
     data = []
 
     with jsonlines.open(headlines_file_path) as reader:
@@ -33,6 +36,10 @@ def prove_carcinogenic_effect_with_science(headlines_file_path, use_actual_scien
 
 
 def discover_terrorists(headlines_file_path):
+    """
+    Uses noun phrase extraction and sentiment analysis to determine whether each headline
+    contains hidden terrorist connotations
+    """
     data = []
 
     with jsonlines.open(headlines_file_path) as reader:

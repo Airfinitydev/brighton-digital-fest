@@ -39,6 +39,10 @@ HTML = """
 
 
 def render_headlines_to_html(headlines_file_path, output_file):
+    """
+    Generates a .html file from the given headlines
+    """
+
     with jsonlines.open(headlines_file_path) as reader:
         with open(output_file, 'w') as writer:
             template = Template(HTML)

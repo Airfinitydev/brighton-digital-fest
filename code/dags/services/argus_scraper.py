@@ -13,6 +13,9 @@ class ArgusScraper(object):
 
     @classmethod
     def extract_headlines(cls, input_file, output_file):
+        """
+        Extracts the URLs & Headlines from an input file & writes the data to the output_file, in JSON Lines format
+        """
         with open(input_file) as reader:
             document = html.fromstring(reader.read().strip())
 
