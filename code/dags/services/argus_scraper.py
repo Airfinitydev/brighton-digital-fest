@@ -1,3 +1,4 @@
+import hashlib
 import logging
 import os
 from lxml import html
@@ -18,8 +19,9 @@ class ArgusScraper(object):
             with jsonlines.open(output_file, 'w') as writer:
                 for article in document.xpath('//div[@class="nq-article-card-content"]/a'):
                     writer.write({
+                        'id': hashlib.sha256(article.attrib['href'].encode()).hexdigest(),
+                        'headline': article.xpath('./h2/text()')[0],
                         'url': article.attrib['href'],
-                        'headline': article.xpath('./h2/text()')[0]
                     })
 
     @classmethod

@@ -5,7 +5,7 @@ from airflow.operators.python_operator import PythonOperator
 from datetime import datetime, timedelta
 
 from services.argus_scraper import ArgusScraper
-from services.text_processing import prove_carcinogenic_effect_with_science
+from services import text_processing
 from services.html_exporter import render_headlines_to_html
 
 PROJ_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -59,7 +59,7 @@ extract_headlines = PythonOperator(
 
 apply_science = PythonOperator(
     task_id='apply_science',
-    python_callable=prove_carcinogenic_effect_with_science,
+    python_callable=text_processing.prove_carcinogenic_effect_with_science,
     op_kwargs={
         'headlines_file_path': HEADLINES_FILE_PATH,
         'use_actual_science': False
@@ -68,22 +68,14 @@ apply_science = PythonOperator(
 )
 
 
-# bigotry_enhancer = PythonOperator(
-#     task_id='bigotry_enhancer',
-#     dag=dag
-# )
-
-
-# fear_mongering_filter = PythonOperator(
-#     task_id='fear_mongering_filter',
-#     dag=dag
-# )
-
-
-# merge_with_real_headlines = PythonOperator(
-#     task_id='merge_with_real_headlines',
-#     dag=dag
-# )
+bigotry_enhancer = PythonOperator(
+    task_id='bigotry_enhancer',
+    python_callable=text_processing.discover_terrorists,
+    op_kwargs={
+        'headlines_file_path': HEADLINES_FILE_PATH
+    },
+    dag=dag
+)
 
 
 export_to_web = PythonOperator(
@@ -101,4 +93,5 @@ latest_only >> \
     download_news >> \
     extract_headlines >> \
     apply_science >> \
+    bigotry_enhancer >> \
     export_to_web

@@ -11,6 +11,11 @@ HTML = """
         <title>The Daily Argus</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            article { overflow: hidden; }
+            article img { float: left; }
+            article .article-body { float: left; }
+        </style>
     </head>
     <body>
         <!--[if lte IE 9]>
@@ -20,8 +25,11 @@ HTML = """
         <section>
         {% for article in articles %}
             <article>
-                <h3>{{ article.new_headline|default(article.headline) }}</h3>
-                <p><a href="http://www.theargus.co.uk{{ article.url }}">View</a></p>
+                <img src="images/{{ article.id }}.jpg" />
+                <div class="article-body">
+                    <h3>{{ article.new_headline|default(article.headline) }}</h3>
+                    <p><a href="http://www.theargus.co.uk{{ article.url }}">View</a></p>
+                </div>
             </article>
         {% endfor %}
         </section>
