@@ -4,7 +4,7 @@ import jsonlines
 from textblob import TextBlob
 
 
-exceptions = set(['injured', 'died', 'ill'])
+exceptions = set(['injured', 'died', 'ill', 'fatal', 'dead', 'death', 'dies', 'stabbing', 'stabbed', 'stabs', 'crash', 'drowns', 'drowned', 'crashed'])
 
 def prove_carcinogenic_effect_with_science(headlines_file_path, use_actual_science):
     """
@@ -18,7 +18,7 @@ def prove_carcinogenic_effect_with_science(headlines_file_path, use_actual_scien
             if not use_actual_science:
                 blob = TextBlob(news_item['headline'])
 
-                if blob.sentiment.polarity < -0.3:
+                if blob.sentiment.polarity < -0.2:
                     tags = blob.tags
                     proper_nouns = set(tag.lower() for tag, token in tags if token == 'NNP')
 
@@ -56,9 +56,9 @@ def discover_terrorists(headlines_file_path):
                     if tag not in exceptions:
                         pattern = re.compile(tag, re.IGNORECASE)
                         try:
-                            news_item['new_headline'] = pattern.sub(random.choice(['Terrorist', 'Foreigner']), news_item['new_headline'], 1)
+                            news_item['new_headline'] = pattern.sub(random.choice(['Terrorist', 'Foreigner', 'Scrounger', 'Brexit denier']), news_item['new_headline'], 1)
                         except KeyError:
-                            news_item['new_headline'] = pattern.sub(random.choice(['Terrorist', 'Foreigner']), news_item['headline'], 1)
+                            news_item['new_headline'] = pattern.sub(random.choice(['Terrorist', 'Foreigner', 'Scrounger', 'Brexit denier']), news_item['headline'], 1)
 
             data.append(news_item)
 

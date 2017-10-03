@@ -24,13 +24,15 @@ HTML = """
         <h1>The Daily Argus</h1>
         <section>
         {% for article in articles %}
+            {% if article.new_headline %}
             <article>
                 <img src="images/{{ article.id }}.jpg" />
                 <div class="article-body">
-                    <h3>{{ article.new_headline|default(article.headline) }}</h3>
+                    <h3>{{ article.new_headline }}</h3>
                     <p><a href="http://www.theargus.co.uk{{ article.url }}">View</a></p>
                 </div>
             </article>
+            {% endif %}
         {% endfor %}
         </section>
     </body>
