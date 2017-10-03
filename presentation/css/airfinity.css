@@ -18,19 +18,46 @@
     src: url("/css/fonts/Roboto-Light.ttf") format("truetype");
 }
 
+body {
+    background-image: url('../images/BGSolid-Blue-01.png');
+}
+
 .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+    color: #00A7F8;
     font-family: "Roboto Light";
     font-weight: normal;
     text-transform: none;
 }
 
+.reveal p {
+    font-size: 0.9em;
+}
+
+.reveal p span {
+    color: #00A7F8;
+}
+
 .reveal {
-    background-image: url(../images/BGGreySolid-01.svg);
+    background-color: #fff;
+    color: #587785;
     font-family: "Roboto Light";
+    height: 92%;
+}
+
+.reveal .dark {
+    color: #fff;
+}
+
+.reveal .dark h1, .reveal .dark h2, .reveal .dark h3, .reveal .dark h4, .reveal .dark h5, .reveal .dark h6 {
+    color: #fff;   
 }
 
 .reveal a {
     color: #17A5FF;
+}
+
+.reveal ul {
+    list-style: none;
 }
 
 #logo {
@@ -41,4 +68,16 @@
     max-height: 50%;
     max-width: 50%;
     padding: 0;
+}
+
+footer {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    height: 5%;
+    z-index:10000000;
+}
+
+footer img {
+    max-height: 100%; 
 }

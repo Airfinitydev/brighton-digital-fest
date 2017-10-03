@@ -15,7 +15,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/black.css" id="theme">
+		<link rel="stylesheet" href="css/theme/white.css" id="theme">
 
 		<!-- Theme used for syntax highlighting of code -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
@@ -43,7 +43,7 @@
 
 			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
-				<section>
+				<section class="dark" data-background="images/BGGreySolid-01.svg">
 					<h3>Building Data Pipelines</h3>
 					<h3>with Airflow</h3>
 					<p>
@@ -62,21 +62,21 @@
 					</section>
 					<section>
 						<!-- <h2>airfinity</h2> -->
-						<p><img id="logo" src="images/Airfinity-Logo.png" /></p>
+						<p><img id="logo" src="images/Airfinity-Logo-Blue.png" /></p>
 						<p>
 							<small>Event Insights &amp; Sponsorship matching<br/><br/>
 							<em>Aiming to make Sponsoring an event as easy as placing a Facebook Ad</em></small>
 						</p>
 						<p><small><a href="https://www.airfinity.com">https://www.airfinity.com</a></small></p>
 					</section>
-					<section data-background="images/james1.jpg">
+					<section class="dark" data-background="images/james1.jpg">
 						<h2>James Heywood</h2>
 						<p>Lead Engineer</p>
 						<p>
 							<small><em>@jdheywood</em></small>
 						</p>
 					</section>
-					<section data-background="images/rich1.jpg">
+					<section class="dark" data-background="images/rich1.jpg">
 						<h2>Richard Hayes</h2>
 						<p>Lead Data Engineer</p>
 						<p>
@@ -85,12 +85,12 @@
 					</section>
 				</section>
 
-				<section>
+				<section class="dark" data-background="images/BGGreySolid-01.svg">
 					<h2>Data Pipelines?</h2>
 				</section>
 
 				<section>
-					<p>"Workflows"</p>
+					<h3>"Workflows"</h3>
 					<p>A set of steps relating to specific pieces of data</p>
 				</section>
 
@@ -103,13 +103,13 @@
 					<p>...many others</p>
 				</section>
 
-				<section>
+				<section class="dark" data-background="images/BGGreySolid-01.svg">
 					<h3>Airflow</h3>
 					<p class="fragment">a workflow management platform</p>
 				</section>
 
 				<section>					
-					<p>Created by AirBnB</p>
+					<h4>Created by AirBnB</h4>
 					<p class="fragment">Open sourced in June 2015</p>
 					<p class="fragment">Joined the Apache Software Foundation’s incubation program in March 2016.</p>
 					<p class="fragment"><a href="https://github.com/apache/incubator-airflow">https://github.com/apache/incubator-airflow</a></p>
@@ -140,11 +140,11 @@
 					<p>...all out of the box</p>
 				</section>
 
-				<section>
+				<section class="dark" data-background="images/BGGreySolid-01.svg">
 					<h3>But I wanna build stuff!</h3>
 				</section>
 
-				<section data-background="images/columbo-dog-mayhem.jpg">
+				<section class="dark" data-background="images/columbo-dog-mayhem.jpg">
 					<h3>just one more thing</h3>
 				</section>
 				
@@ -154,9 +154,9 @@
 				</section>
 
 				<section>
-					<p>Graph: A structure consisting of "nodes", connected to one another via "edges"</p>
-					<p class="fragment">Directed: The edges have a direction: <br/>A -> B is not B -> A</p>
-					<p class="fragment">Acyclic: Non-circular, you will never encounter the same node again</p>
+					<p><span>Graph</span>: A structure consisting of "nodes", connected to one another via "edges"</p>
+					<p class="fragment"><span>Directed</span>: The edges have a direction: <br/>A -> B is not B -> A</p>
+					<p class="fragment"><span>Acyclic</span>: Non-circular, you will never encounter the same node again</p>
 				</section>
 
 				<section>
@@ -169,12 +169,18 @@
 
 				<section>
 					<h3>In Airflow's world...</h3>
-					<p>DAG - A pipeline containing one or more tasks</p>
-					<p>Task - A unit of work within a DAG</p>
+					<p><span>DAG</span> - A pipeline containing one or more operations/tasks</p>
+					<p><span>Operations</span> - A unit of work within a DAG</p>
 				</section>
 
 				<section>
-					<h3>DEMO</h3>
+					<h3>Operators &amp; Sensors</h3>
+					<p><span>Operators</span> - runs bash/python/other code immediately</p>
+					<p><span>Sensors</span> - polling mechanism (DB record, S3 file etc)</p>
+				</section>				
+
+				<section class="dark" data-background="images/BGGreySolid-01.svg">
+					<h3>Demo</h3>
 				</section>
 
 				<section>
@@ -210,6 +216,7 @@
 						</code></pre>
 					</section>
 					<section>
+							<h4>Latest Only Operator</h4>
 							<pre><code class="python" data-trim contenteditable style="font-size: 17px;">
 
 		latest_only = LatestOnlyOperator(task_id='latest_only', dag=dag)
@@ -217,7 +224,7 @@
 							</code></pre>
 						</section>
 						<section class="stretch">
-                                <h4>Example tasks</h4>
+                                <h4>Operators</h4>
 								<pre><code class="python" data-trim contenteditable style="font-size: 16px;">
   download_news = PythonOperator(
 			task_id='download_news',
@@ -243,6 +250,9 @@
         download_webpage.set_upstream(latest_only)
         extract_headlines.set_upstream(download_webpage)
         apply_science.set_upstream(extract_headlines)
+
+        x.set_downstream(y)
+        w.set_upstream(y)
         ...
                                     </code></pre>
                                     <small>Super horrible and confusing</small>
@@ -260,7 +270,7 @@
                 export_to_web
                                         </code></pre>
                                     </section>
-                                    <section>
+                                    <section class="dark" data-background="images/BGGreySolid-01.svg">
                                         <h3>Some actual code</h3>
                                     </section>
                                     <section>
@@ -286,9 +296,15 @@
 										<p><a href="http://www.brightonpy.org/">http://www.brightonpy.org/</a></p>
 										<p><small>Next meet up 12th October from 6PM right here</small></p>
 									</section>
+									<section class="dark" data-background="images/BGGreySolid-01.svg">
+										<h3>Thank you</h3>
+									</section>
 			</div>
-
+			
 		</div>
+		<footer>
+			<img src="images/Airfinity-Logo.png" />
+		</footer>
 
 		<script src="lib/js/head.min.js"></script>
 		<script src="js/reveal.js"></script>
