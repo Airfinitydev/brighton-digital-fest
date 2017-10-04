@@ -3,8 +3,8 @@ import random
 import jsonlines
 from textblob import TextBlob
 
+exceptions = set(['injured', 'died', 'ill', 'fatal', 'dead', 'death', 'dies', 'stabbing', 'stabbed', 'stabs', 'crash', 'drowns', 'drowned', 'crash', 'crashed'])
 
-exceptions = set(['injured', 'died', 'ill', 'fatal', 'dead', 'death', 'dies', 'stabbing', 'stabbed', 'stabs', 'crash', 'drowns', 'drowned', 'crashed'])
 
 def prove_carcinogenic_effect_with_science(headlines_file_path, use_actual_science):
     """

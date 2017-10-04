@@ -1,3 +1,4 @@
+import math
 import jsonlines
 from jinja2 import Template
 
@@ -12,6 +13,7 @@ HTML = """
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
+            col { float: left; width: 49.5%; }
             article { overflow: hidden; }
             article img { float: left; }
             article .article-body { float: left; }
@@ -23,21 +25,31 @@ HTML = """
         <![endif]-->
         <h1>The Daily Argus</h1>
         <section>
-        {% for article in articles %}
-            {% if article.new_headline %}
-            <article>
-                <img src="images/{{ article.id }}.jpg" />
-                <div class="article-body">
-                    <h3>{{ article.new_headline }}</h3>
-                    <p><a href="http://www.theargus.co.uk{{ article.url }}">View</a></p>
-                </div>
-            </article>
-            {% endif %}
+        {% for articles in columns %}
+            <div class="col">
+                {% for article in articles %}
+                    {% if article.new_headline %}
+                    <article>
+                        <img src="images/{{ article.id }}.jpg" />
+                        <div class="article-body">
+                            <h3>{{ article.new_headline }}</h3>
+                            <p><a href="http://www.theargus.co.uk{{ article.url }}">View</a></p>
+                        </div>
+                    </article>
+                    {% endif %}
+                {% endfor %}
+            </div>
         {% endfor %}
         </section>
     </body>
 </html>
 """
+
+
+def chunks(iterable, size):
+    """Yield successive chunks of size from iterable."""
+    chunksize = int(math.ceil(len(iterable) / size))
+    return (iterable[i * chunksize:i * chunksize + chunksize] for i in range(size))
 
 
 def render_headlines_to_html(headlines_file_path, output_file):
@@ -48,4 +60,4 @@ def render_headlines_to_html(headlines_file_path, output_file):
     with jsonlines.open(headlines_file_path) as reader:
         with open(output_file, 'w') as writer:
             template = Template(HTML)
-            writer.write(template.render(articles=reader))
+            writer.write(template.render(columns=chunks(list(reader), 2)))

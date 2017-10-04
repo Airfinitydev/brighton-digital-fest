@@ -7,12 +7,14 @@ from airflow.operators.python_operator import PythonOperator
 from services.argus_scraper import ArgusScraper
 from services import text_processing
 from services.html_exporter import render_headlines_to_html
+from services.image_downloader import download_random_images
 
 PROJ_DIR = os.path.dirname(os.path.abspath(__file__))
 
 WEBPAGE_FILE_PATH = os.path.join(PROJ_DIR, 'data/argus_news.html')
 HEADLINES_FILE_PATH = os.path.join(PROJ_DIR, 'data/headlines.jsonl')
 HTML_OUTPUT_FILE = os.path.join(PROJ_DIR, 'data/index.html')
+IMAGE_FOLDER = os.path.join(PROJ_DIR, 'data/images')
 
 
 default_args = {
@@ -89,9 +91,25 @@ export_to_web = PythonOperator(
 )
 
 
+# download_images = PythonOperator(
+#     task_id='download_random_images',
+#     python_callable=download_random_images,
+#     op_kwargs={
+#         'headlines_file_path': HEADLINES_FILE_PATH, 
+#         'output_folder': IMAGE_FOLDER
+#     },
+#     dag=dag
+# )
+
+
 latest_only >> \
     download_news >> \
     extract_headlines >> \
     apply_science >> \
     bigotry_enhancer >> \
     export_to_web
+
+
+# extract_headlines >> \
+#     download_images >> \
+#     export_to_web
